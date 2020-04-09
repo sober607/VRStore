@@ -1,0 +1,11 @@
+	 	 	 Invoice #245681553
+	 	 	 09.04.2020 16:26:46
+			 Customer name: User First 
+
+|Product name 	|Price	|Quantity	|Summ
+--				
+|Acer s9		|444	|1	|444
+--				
+|Acer s9		|444	|1	|444
+--------------------
+				Total amount: 888 USD
