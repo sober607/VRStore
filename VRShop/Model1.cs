@@ -5,6 +5,7 @@
     using System.Linq;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using System.Collections.Generic;
 
     public class Model1 : DbContext
     {
@@ -87,7 +88,14 @@
 
         public string CategoryName { get; set; }
 
-        public int? ParentCategory { get; set; }
+       // public int? ParentCategory { get; set; }
+
+        public ICollection<Product> Products { get; set; }
+
+        public Category()
+            {
+            Products = new List<Product>();
+            }
 
     }
 

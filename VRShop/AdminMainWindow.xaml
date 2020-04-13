@@ -27,17 +27,39 @@
                         <TextBox x:Name="ProductDescriptionTextBox_Admin" Canvas.Left="426" TextWrapping="Wrap" Canvas.Top="63" Height="21" Width="120"/>
                         <TextBox x:Name="ProductPriceTextBox_Admin" Height="23" Canvas.Left="426" TextWrapping="Wrap" Canvas.Top="94" Width="120"/>
                         <Label Content="Price, USD*" Canvas.Left="293" Canvas.Top="94"/>
-                        <Image x:Name="ProductImage_Admin" Height="75" Canvas.Left="426" Canvas.Top="133" Width="75"/>
-                        <Label Content="Image" Canvas.Left="293" Canvas.Top="133"/>
-                        <Button Content="Open" Canvas.Left="549" Canvas.Top="135" Width="75" Click="Button_Upload_Photo"/>
-                        <Button Content="Add" Canvas.Left="354" Canvas.Top="213" Width="75" Click="Add_Product_Button_Click"/>
-                        <Button Content="Edit" Canvas.Left="535" Canvas.Top="213" Width="75" Click="Edit_Product_Button_Edit"/>
+                        <Image x:Name="ProductImage_Admin" Height="75" Canvas.Left="426" Canvas.Top="173" Width="75"/>
+                        <Label Content="Image" Canvas.Left="293" Canvas.Top="182"/>
+                        <Button Content="Open" Canvas.Left="549" Canvas.Top="186" Width="75" Click="Button_Upload_Photo"/>
+                        <Button Content="Add" Canvas.Left="354" Canvas.Top="253" Width="75" Click="Add_Product_Button_Click"/>
+                        <Button Content="Edit" Canvas.Left="549" Canvas.Top="253" Width="75" Click="Edit_Product_Button_Edit"/>
+                        <Label Content="Category" Canvas.Left="293" Canvas.Top="129"/>
+                        <ComboBox x:Name="parentCategoryNameforProductAddComboBox" Canvas.Left="426" Canvas.Top="129" Width="120"/>
 
 
 
                     </Canvas>
                 </TabItem.Content>
             </TabItem>
+            <TabItem Header="Categories">
+                <TabItem.Content>
+                    <Canvas>
+                        <Label Content="Categories" Height="30" Width="100" Canvas.Left="282" FontWeight="Bold" FontSize="16"/>
+                        <DataGrid x:Name="dataGridAdminCategories" HorizontalAlignment="Left" Height="110" VerticalAlignment="Top" Width="288" IsSynchronizedWithCurrentItem="True" DataGridCell.Selected="DataGridCell_SelectedForEdit" Canvas.Top="52">
+
+                        </DataGrid>
+                        <Label Content="Add category" Canvas.Left="478" Canvas.Top="52" />
+                        <TextBox x:Name="newCategoryNameBox"  Height="23" Canvas.Left="478" TextWrapping="Wrap" Canvas.Top="83" Width="120"/>
+                        
+                        <Button Content="Add" Canvas.Left="480" Canvas.Top="193" Width="75" Click="Add_Category_Button_Click"/>
+                        <Label Content="Category name" Canvas.Left="354" Canvas.Top="81"/>
+                        
+
+
+                    </Canvas>
+                </TabItem.Content>
+            </TabItem>
+
+
             <TabItem Header="Orders">
                 <Canvas>
                     <DataGrid x:Name="dataGridAdminOrders" HorizontalAlignment="Left" Height="110" VerticalAlignment="Top" Width="288" IsSynchronizedWithCurrentItem="True" DataGridCell.Selected="DataGridCell_SelectedToShowUser">
@@ -68,6 +90,7 @@
                     <Button Content="Add admin" Canvas.Left="297" Canvas.Top="286" Width="75" Click="Add_Admin_Button_Click"/>
                 </Canvas>
             </TabItem>
+
 
 
 

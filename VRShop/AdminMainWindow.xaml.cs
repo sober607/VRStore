@@ -31,12 +31,17 @@ namespace VRShop
         public AdminMainWindow()
         {
             InitializeComponent();
+
+            // предзагрузка даных из БД
             using (Model1 db = new Model1())
             {
                 dataGridAdminView1.ItemsSource = db.Products.ToList();
                 dataGridAdminOrders.ItemsSource = db.OrderedProducts.ToList();
                 dataGridUsersList.ItemsSource = db.UsersData.Where(p => p.User.AccessLevel == 1).ToList();
                 dataGridAdminsList.ItemsSource = db.ManagerData.Where(p => p.User.AccessLevel == 0).ToList();
+                dataGridAdminCategories.ItemsSource = db.Categories.ToList();
+                Fill_Category_For_Add();
+                //Fill_Child_category();
             }
 
 
@@ -92,15 +97,18 @@ namespace VRShop
         public void Add_Product_Button_Click(object sender, RoutedEventArgs e)
         {
             double temp; // временная переменная для цены
+            if (ProductNameTextBox_Admin.Name != "" || ProductDescriptionTextBox_Admin.Text != "" || parentCategoryNameforProductAddComboBox.SelectedItem != null)
+            { 
             if (Double.TryParse(ProductPriceTextBox_Admin.Text, out temp))
             {
                 using (Model1 db = new Model1())
                 {
-
-                    Product newProduct = new Product { ProductName = ProductNameTextBox_Admin.Text, ProductDescripton = ProductDescriptionTextBox_Admin.Text, Price = temp, ProductImg = photoConvertedDataTemp };
+                        Category choosedCategory = db.Categories.First(p=>p.CategoryName == parentCategoryNameforProductAddComboBox.SelectedItem.ToString());
+                    Product newProduct = new Product { ProductName = ProductNameTextBox_Admin.Text, ProductDescripton = ProductDescriptionTextBox_Admin.Text, Price = temp, ProductImg = photoConvertedDataTemp, Category = choosedCategory };
                     db.Products.Add(newProduct);
                     db.SaveChanges();
                     dataGridAdminView1.ItemsSource = db.Products.ToList();
+                    //очистка полей после добавления
                     ProductNameTextBox_Admin.Text = null;
                     ProductDescriptionTextBox_Admin.Text = null;
                     ProductPriceTextBox_Admin.Text = null;
@@ -109,13 +117,20 @@ namespace VRShop
                     MessageBox.Show("Successfully added");
                 }
             }
+                else
+                {
+                    MessageBox.Show("Wrong input format");
+                }
+            }
             else
             {
                 MessageBox.Show("Wrong input format");
             }
 
+
         }
 
+        //заполнение textboxов для редкатирования
         private void DataGridCell_SelectedForEdit(object sender, RoutedEventArgs e)
         {
             using (Model1 db = new Model1())
@@ -131,6 +146,7 @@ namespace VRShop
 
         }
 
+        // редактирование выбранного продукта
         private void Edit_Product_Button_Edit(object sender, RoutedEventArgs e)
         {
             using (Model1 db = new Model1())
@@ -146,6 +162,7 @@ namespace VRShop
             }
         }
 
+        //конвертация данных из массива в картинку
         public static BitmapImage ConvertByteArrayToImage(byte[] array)
         {
             if (array != null)
@@ -163,6 +180,7 @@ namespace VRShop
             return null;
         }
 
+        //отображение выбранного продукта
         private void DataGridCell_SelectedToShowUser(object sender, RoutedEventArgs e)
         {
             using (Model1 db = new Model1())
@@ -193,6 +211,7 @@ namespace VRShop
 
         }
 
+        // удаление выбранного аккаунта администратора
         private void Button_Delete_Selected_Admin(object sender, RoutedEventArgs e)
         {
             using (Model1 db = new Model1())
@@ -210,6 +229,7 @@ namespace VRShop
             }
         }
 
+        // функция добавления нового Администратора
         private void Add_Admin_Button_Click(object sender, RoutedEventArgs e)
         {
             var emailPattern = new Regex(@"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
@@ -233,5 +253,71 @@ namespace VRShop
         }
 
 
-    }
-}
+        //заполнение родительских категорий для добавления продукта
+        private void Fill_Category_For_Add()
+        {
+            //int categoryCounter = 0;
+            if (parentCategoryNameforProductAddComboBox.Items.Count < 1)
+            {
+                using (Model1 db = new Model1())
+                {
+                    foreach (Category t in db.Categories)
+                    {
+                        parentCategoryNameforProductAddComboBox.Items.Add(t.CategoryName);
+                        //parentCategoryNameforProductAddComboBox.
+                        //categoryCounter++;
+                    }
+
+                }
+            }
+        }
+
+        //заполнение родительских категорий в форме редкатирования категорий
+        //private void Fill_Child_category ()
+        //{
+        //    if (parentCategoryNameComboBox.Items.Count <1)
+        //    { 
+        //    parentCategoryNameComboBox.Items.Add("No root category");
+        //    using (Model1 db = new Model1())
+        //    {
+        //        foreach(Category t in db.Categories)
+        //        {
+        //            parentCategoryNameComboBox.Items.Add(t.CategoryName);
+        //        }
+
+        //    }
+        //    }
+        //}
+
+        //нажатие кнопки Добавить новую категорию
+        private void Add_Category_Button_Click(object sender, RoutedEventArgs e)
+        {
+
+            using (Model1 db = new Model1())
+            {
+                var newCategory = new Category { CategoryName = newCategoryNameBox.Text  };
+                //if (parentCategoryNameComboBox.SelectedItem != null )
+                //{
+                //    if (parentCategoryNameComboBox.SelectedItem.ToString() != "No root category")
+                //    {
+                //      //  newCategory.ParentCategory = Convert.ToInt32(db.Categories.FirstOrDefault(p => p.CategoryName == parentCategoryNameComboBox.SelectedItem.ToString()).Id);//Convert.ToInt32(db.Categories.FirstOrDefault(p => p.CategoryName == (parentCategoryNameComboBox.SelectedItem as string)).Id);}
+
+                //    }
+                //}
+                db.Categories.Add(newCategory);
+                db.SaveChanges();
+                MessageBox.Show("Category added");
+                dataGridAdminCategories.ItemsSource = db.Categories.ToList();
+                //Fill_Child_category();
+                Fill_Category_For_Add();
+            }
+                        
+                        
+                        
+                        }
+            }
+        }
+
+
+    
+

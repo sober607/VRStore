@@ -29,7 +29,11 @@ namespace VRShop
             Random random = new Random();
             using (Model1 db = new Model1())
             {
+                
+                //дефолтное наполнение продуктов в окне для юзера
                 productsList.ItemsSource = db.Products.ToList();
+
+                
                 UserBasketDatagrid.ItemsSource = db.OrderedProducts.Where(p => p.OrderConfirmed == false).ToList();
                 
                 newOrderId = random.Next();
@@ -41,8 +45,10 @@ namespace VRShop
 
 
             }
-            
+            //отображение меню согласно категорий
+            Generate_Categories();
 
+            //действия при закрытии окна
             this.Closed += UserWindow_Closed;
         }
 
@@ -183,14 +189,17 @@ namespace VRShop
 
         private void DataGridProductsCell_SelectedForView(object sender, RoutedEventArgs e)
         {
+             
             using (Model1 db = new Model1())
             {
                 Product selectedProductUser = (Product)productsList.SelectedItem;
-
-                UserView_ProductName.Content = selectedProductUser.ProductName;
+                if (selectedProductUser != null)
+                {
+                    UserView_ProductName.Content = selectedProductUser.ProductName;
                 UserView_ProductDescription.Content = selectedProductUser.ProductDescripton;
                 UserView_ProductPrice.Content = Convert.ToString(selectedProductUser.Price) + " USD";
                 UserView_ProductImage.Source = AdminMainWindow.ConvertByteArrayToImage(selectedProductUser.ProductImg);
+            }
             }
 
 
@@ -208,6 +217,35 @@ namespace VRShop
             UserHistoryOfOrders userHistoryOfOrdersWindow = new UserHistoryOfOrders();
             userHistoryOfOrdersWindow.Show();
         }
+
+        //функция генерации меню с категориями и создания события открытия категории согла
+        private void Generate_Categories ()
+        {
+            using (Model1 db = new Model1())
+            {
+                foreach (Category t in db.Categories)
+                {
+                    var productListAccordingToCategory = db.Products.Where(p => p.Category.Id == t.Id).ToList();
+                    MenuItem newMenuItem1 = new MenuItem();
+                    newMenuItem1.Header = t.CategoryName;
+                    this.mainUserMenu.Items.Add(newMenuItem1);
+                    newMenuItem1.Click += new RoutedEventHandler(delegate (Object o, RoutedEventArgs a)
+                    {
+                        productsList.ItemsSource = productListAccordingToCategory;
+                    });
+
+
+                }
+
+            }
+
+
+
+        }
+
+        
+
+        
     }
 
 
